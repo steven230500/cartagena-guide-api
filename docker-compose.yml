@@ -1,0 +1,32 @@
+# Local, para desarrollo. NO toca el droplet — eso llega en una fase futura
+# cuando este proyecto tenga su propio repo (ver plan de Fase 1).
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: cartagena-api-postgres
+    environment:
+      POSTGRES_DB: cartagena
+      POSTGRES_USER: cartagena
+      POSTGRES_PASSWORD: cartagena_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432" # 5432 del host está ocupado (postgres nativo + túnel ssh) — se usa 5433 hacia afuera
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cartagena"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: cartagena-api
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

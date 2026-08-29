@@ -1,0 +1,68 @@
+name: deploy
+on:
+  workflow_run:
+    workflows: [ "docker-publish" ]
+    types: [ completed ]
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into droplet and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          envs: SERVER_PATH
+          script: |
+            set -euo pipefail
+
+            # Docker / Compose
+            if ! command -v docker >/dev/null 2>&1; then
+              curl -fsSL https://get.docker.com | sh
+            fi
+            if docker compose version >/dev/null 2>&1; then
+              COMPOSE="docker compose"
+            else
+              sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              COMPOSE="docker-compose"
+            fi
+
+            # Red externa para hablar con Caddy central
+            docker network inspect infra_infra_network >/dev/null 2>&1 || docker network create infra_infra_network
+
+            # Carpeta de deploy
+            SERVER_PATH="${{ secrets.SERVER_PATH }}"
+            mkdir -p "$SERVER_PATH"
+            cd "$SERVER_PATH"
+
+            # Copiar archivos desde el repo (más simple y confiable)
+            rm -rf temp_repo
+            git clone https://github.com/steven230500/cartagena-guide-api.git temp_repo
+            cp temp_repo/docker-compose.prod.yml docker-compose.yml
+            rm -rf temp_repo
+
+            # Actualizar imagen en docker-compose.yml
+            sed -i 's|image: ghcr.io/steven230500/cartagena-guide-api.*|image: ghcr.io/steven230500/cartagena-guide-api:latest|' docker-compose.yml
+
+            # Crear .env
+            cat > .env << EOF
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            ADMIN_API_KEY=${{ secrets.ADMIN_API_KEY }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            EOF
+
+            # Pull & Up
+            $COMPOSE pull
+            $COMPOSE up -d --remove-orphans
+
+            echo "Deployment completed successfully"

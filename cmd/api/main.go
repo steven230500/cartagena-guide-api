@@ -12,6 +12,7 @@ import (
 	"github.com/steven230500/cartagena-api/internal/middleware"
 	"github.com/steven230500/cartagena-api/internal/repository/postgres"
 	"github.com/steven230500/cartagena-api/internal/service"
+	"github.com/steven230500/cartagena-api/migrations"
 )
 
 func main() {
@@ -24,6 +25,10 @@ func main() {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET no está seteada")
+	}
+
+	if err := migrations.Run(databaseURL); err != nil {
+		log.Fatalf("no se pudieron aplicar las migraciones: %v", err)
 	}
 
 	ctx := context.Background()
@@ -58,6 +63,9 @@ func main() {
 	)
 
 	r := gin.Default()
+	if err := r.SetTrustedProxies(nil); err != nil {
+		log.Fatalf("no se pudo configurar trusted proxies: %v", err)
+	}
 
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})

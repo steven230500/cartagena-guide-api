@@ -1,0 +1,43 @@
+services:
+  cartagena-api:
+    image: ghcr.io/steven230500/cartagena-guide-api:latest
+    container_name: cartagena-api
+    restart: unless-stopped
+    environment:
+      - PORT=8080
+      - GIN_MODE=release
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+      - DATABASE_URL=postgres://cartagena:${POSTGRES_PASSWORD}@cartagena-db:5432/cartagena
+    networks:
+      - infra_infra_network
+      - cartagena_internal
+    depends_on:
+      cartagena-db:
+        condition: service_healthy
+
+  cartagena-db:
+    image: postgres:17-alpine
+    container_name: cartagena-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=cartagena
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=cartagena
+    volumes:
+      - cartagena_pgdata:/var/lib/postgresql/data
+    networks:
+      - cartagena_internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cartagena"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  infra_infra_network:
+    external: true
+  cartagena_internal:
+
+volumes:
+  cartagena_pgdata:

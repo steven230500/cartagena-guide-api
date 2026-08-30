@@ -43,6 +43,7 @@ type Business struct {
 	Verified         bool               `json:"verified"`
 	CreatedAt        pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt        pgtype.Timestamptz `json:"updated_at"`
+	DescriptionEn    *string            `json:"description_en"`
 }
 
 type BusinessClaim struct {
@@ -72,6 +73,8 @@ type Event struct {
 	Content           *string            `json:"content"`
 	CreatedAt         pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
+	TitleEn           *string            `json:"title_en"`
+	DescriptionEn     *string            `json:"description_en"`
 }
 
 type Parish struct {
@@ -104,21 +107,23 @@ type Plan struct {
 }
 
 type Route struct {
-	ID          pgtype.UUID        `json:"id"`
-	Slug        string             `json:"slug"`
-	Title       string             `json:"title"`
-	Description string             `json:"description"`
-	Duration    string             `json:"duration"`
-	Distance    string             `json:"distance"`
-	Difficulty  string             `json:"difficulty"`
-	Category    string             `json:"category"`
-	Image       string             `json:"image"`
-	Highlights  []string           `json:"highlights"`
-	AudioGuide  bool               `json:"audio_guide"`
-	Offline     bool               `json:"offline"`
-	Price       string             `json:"price"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
+	ID            pgtype.UUID        `json:"id"`
+	Slug          string             `json:"slug"`
+	Title         string             `json:"title"`
+	Description   string             `json:"description"`
+	Duration      string             `json:"duration"`
+	Distance      string             `json:"distance"`
+	Difficulty    string             `json:"difficulty"`
+	Category      string             `json:"category"`
+	Image         string             `json:"image"`
+	Highlights    []string           `json:"highlights"`
+	AudioGuide    bool               `json:"audio_guide"`
+	Offline       bool               `json:"offline"`
+	Price         string             `json:"price"`
+	CreatedAt     pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt     pgtype.Timestamptz `json:"updated_at"`
+	TitleEn       *string            `json:"title_en"`
+	DescriptionEn *string            `json:"description_en"`
 }
 
 type RouteStep struct {

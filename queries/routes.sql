@@ -6,18 +6,18 @@ SELECT * FROM routes WHERE slug = $1;
 
 -- name: CreateRoute :one
 INSERT INTO routes (
-    slug, title, description, duration, distance, difficulty, category, image,
+    slug, title, title_en, description, description_en, duration, distance, difficulty, category, image,
     highlights, audio_guide, offline, price
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 )
 RETURNING *;
 
 -- name: UpdateRoute :one
 UPDATE routes SET
-    slug = $2, title = $3, description = $4, duration = $5, distance = $6,
-    difficulty = $7, category = $8, image = $9, highlights = $10,
-    audio_guide = $11, offline = $12, price = $13, updated_at = now()
+    slug = $2, title = $3, title_en = $4, description = $5, description_en = $6, duration = $7, distance = $8,
+    difficulty = $9, category = $10, image = $11, highlights = $12,
+    audio_guide = $13, offline = $14, price = $15, updated_at = now()
 WHERE id = $1
 RETURNING *;
 

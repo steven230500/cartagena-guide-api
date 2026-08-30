@@ -15,20 +15,22 @@ type RouteStep struct {
 }
 
 type Route struct {
-	ID          string      `json:"id"`
-	Slug        string      `json:"slug"`
-	Title       string      `json:"title"`
-	Description string      `json:"description"`
-	Duration    string      `json:"duration"`
-	Distance    string      `json:"distance"`
-	Difficulty  string      `json:"difficulty"`
-	Category    string      `json:"category"`
-	Image       string      `json:"image"`
-	Highlights  []string    `json:"highlights"`
-	AudioGuide  bool        `json:"audio_guide"`
-	Offline     bool        `json:"offline"`
-	Price       string      `json:"price"`
-	Steps       []RouteStep `json:"steps"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
+	ID            string      `json:"id"`
+	Slug          string      `json:"slug"`
+	Title         string      `json:"title"`
+	TitleEn       *string     `json:"title_en"`
+	Description   string      `json:"description"`
+	DescriptionEn *string     `json:"description_en"`
+	Duration      string      `json:"duration"`
+	Distance      string      `json:"distance"`
+	Difficulty    string      `json:"difficulty"`
+	Category      string      `json:"category"`
+	Image         string      `json:"image"`
+	Highlights    []string    `json:"highlights"`
+	AudioGuide    bool        `json:"audio_guide"`
+	Offline       bool        `json:"offline"`
+	Price         string      `json:"price"`
+	Steps         []RouteStep `json:"steps"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
 }

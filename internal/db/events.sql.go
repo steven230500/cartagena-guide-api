@@ -13,16 +13,17 @@ import (
 
 const createEvent = `-- name: CreateEvent :one
 INSERT INTO events (
-    title, slug, start_date, end_date, type, venue, related_business_id,
-    lat, lng, image, tags, description, content
+    title, title_en, slug, start_date, end_date, type, venue, related_business_id,
+    lat, lng, image, tags, description, description_en, content
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 )
-RETURNING id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at
+RETURNING id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at, title_en, description_en
 `
 
 type CreateEventParams struct {
 	Title             string      `json:"title"`
+	TitleEn           *string     `json:"title_en"`
 	Slug              string      `json:"slug"`
 	StartDate         pgtype.Date `json:"start_date"`
 	EndDate           pgtype.Date `json:"end_date"`
@@ -34,12 +35,14 @@ type CreateEventParams struct {
 	Image             string      `json:"image"`
 	Tags              []string    `json:"tags"`
 	Description       string      `json:"description"`
+	DescriptionEn     *string     `json:"description_en"`
 	Content           *string     `json:"content"`
 }
 
 func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event, error) {
 	row := q.db.QueryRow(ctx, createEvent,
 		arg.Title,
+		arg.TitleEn,
 		arg.Slug,
 		arg.StartDate,
 		arg.EndDate,
@@ -51,6 +54,7 @@ func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event
 		arg.Image,
 		arg.Tags,
 		arg.Description,
+		arg.DescriptionEn,
 		arg.Content,
 	)
 	var i Event
@@ -71,6 +75,8 @@ func (q *Queries) CreateEvent(ctx context.Context, arg CreateEventParams) (Event
 		&i.Content,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TitleEn,
+		&i.DescriptionEn,
 	)
 	return i, err
 }
@@ -85,7 +91,7 @@ func (q *Queries) DeleteEvent(ctx context.Context, id pgtype.UUID) error {
 }
 
 const getEventBySlug = `-- name: GetEventBySlug :one
-SELECT id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at FROM events WHERE slug = $1
+SELECT id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at, title_en, description_en FROM events WHERE slug = $1
 `
 
 func (q *Queries) GetEventBySlug(ctx context.Context, slug string) (Event, error) {
@@ -108,12 +114,14 @@ func (q *Queries) GetEventBySlug(ctx context.Context, slug string) (Event, error
 		&i.Content,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TitleEn,
+		&i.DescriptionEn,
 	)
 	return i, err
 }
 
 const listEvents = `-- name: ListEvents :many
-SELECT id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at FROM events ORDER BY start_date
+SELECT id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at, title_en, description_en FROM events ORDER BY start_date
 `
 
 func (q *Queries) ListEvents(ctx context.Context) ([]Event, error) {
@@ -142,6 +150,8 @@ func (q *Queries) ListEvents(ctx context.Context) ([]Event, error) {
 			&i.Content,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TitleEn,
+			&i.DescriptionEn,
 		); err != nil {
 			return nil, err
 		}
@@ -155,33 +165,36 @@ func (q *Queries) ListEvents(ctx context.Context) ([]Event, error) {
 
 const updateEvent = `-- name: UpdateEvent :one
 UPDATE events SET
-    title = $2, slug = $3, start_date = $4, end_date = $5, type = $6, venue = $7,
-    lat = $8, lng = $9, image = $10, tags = $11, description = $12, content = $13,
+    title = $2, title_en = $3, slug = $4, start_date = $5, end_date = $6, type = $7, venue = $8,
+    lat = $9, lng = $10, image = $11, tags = $12, description = $13, description_en = $14, content = $15,
     updated_at = now()
 WHERE id = $1
-RETURNING id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at
+RETURNING id, title, slug, start_date, end_date, type, venue, related_business_id, lat, lng, image, tags, description, content, created_at, updated_at, title_en, description_en
 `
 
 type UpdateEventParams struct {
-	ID          pgtype.UUID `json:"id"`
-	Title       string      `json:"title"`
-	Slug        string      `json:"slug"`
-	StartDate   pgtype.Date `json:"start_date"`
-	EndDate     pgtype.Date `json:"end_date"`
-	Type        string      `json:"type"`
-	Venue       string      `json:"venue"`
-	Lat         float64     `json:"lat"`
-	Lng         float64     `json:"lng"`
-	Image       string      `json:"image"`
-	Tags        []string    `json:"tags"`
-	Description string      `json:"description"`
-	Content     *string     `json:"content"`
+	ID            pgtype.UUID `json:"id"`
+	Title         string      `json:"title"`
+	TitleEn       *string     `json:"title_en"`
+	Slug          string      `json:"slug"`
+	StartDate     pgtype.Date `json:"start_date"`
+	EndDate       pgtype.Date `json:"end_date"`
+	Type          string      `json:"type"`
+	Venue         string      `json:"venue"`
+	Lat           float64     `json:"lat"`
+	Lng           float64     `json:"lng"`
+	Image         string      `json:"image"`
+	Tags          []string    `json:"tags"`
+	Description   string      `json:"description"`
+	DescriptionEn *string     `json:"description_en"`
+	Content       *string     `json:"content"`
 }
 
 func (q *Queries) UpdateEvent(ctx context.Context, arg UpdateEventParams) (Event, error) {
 	row := q.db.QueryRow(ctx, updateEvent,
 		arg.ID,
 		arg.Title,
+		arg.TitleEn,
 		arg.Slug,
 		arg.StartDate,
 		arg.EndDate,
@@ -192,6 +205,7 @@ func (q *Queries) UpdateEvent(ctx context.Context, arg UpdateEventParams) (Event
 		arg.Image,
 		arg.Tags,
 		arg.Description,
+		arg.DescriptionEn,
 		arg.Content,
 	)
 	var i Event
@@ -212,6 +226,8 @@ func (q *Queries) UpdateEvent(ctx context.Context, arg UpdateEventParams) (Event
 		&i.Content,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TitleEn,
+		&i.DescriptionEn,
 	)
 	return i, err
 }

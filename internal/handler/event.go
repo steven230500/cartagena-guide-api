@@ -12,18 +12,20 @@ import (
 
 // EventInput es el body que espera el panel admin. Fechas como "2006-01-02".
 type EventInput struct {
-	Title       string   `json:"title" binding:"required"`
-	Slug        string   `json:"slug" binding:"required"`
-	StartDate   string   `json:"start_date" binding:"required"`
-	EndDate     string   `json:"end_date"`
-	Type        string   `json:"type" binding:"required"`
-	Venue       string   `json:"venue"`
-	Lat         float64  `json:"lat"`
-	Lng         float64  `json:"lng"`
-	Image       string   `json:"image"`
-	Tags        []string `json:"tags"`
-	Description string   `json:"description"`
-	Content     *string  `json:"content"`
+	Title         string   `json:"title" binding:"required"`
+	TitleEn       *string  `json:"title_en"`
+	Slug          string   `json:"slug" binding:"required"`
+	StartDate     string   `json:"start_date" binding:"required"`
+	EndDate       string   `json:"end_date"`
+	Type          string   `json:"type" binding:"required"`
+	Venue         string   `json:"venue"`
+	Lat           float64  `json:"lat"`
+	Lng           float64  `json:"lng"`
+	Image         string   `json:"image"`
+	Tags          []string `json:"tags"`
+	Description   string   `json:"description"`
+	DescriptionEn *string  `json:"description_en"`
+	Content       *string  `json:"content"`
 }
 
 func validDateFormat(s string) bool {
@@ -40,9 +42,9 @@ func (in EventInput) toDomain() domain.Event {
 		endDate = &in.EndDate
 	}
 	return domain.Event{
-		Title: in.Title, Slug: in.Slug, StartDate: in.StartDate, EndDate: endDate,
+		Title: in.Title, TitleEn: in.TitleEn, Slug: in.Slug, StartDate: in.StartDate, EndDate: endDate,
 		Type: in.Type, Venue: in.Venue, Lat: in.Lat, Lng: in.Lng, Image: in.Image,
-		Tags: in.Tags, Description: in.Description, Content: in.Content,
+		Tags: in.Tags, Description: in.Description, DescriptionEn: in.DescriptionEn, Content: in.Content,
 	}
 }
 

@@ -13,34 +13,38 @@ import (
 
 const createRoute = `-- name: CreateRoute :one
 INSERT INTO routes (
-    slug, title, description, duration, distance, difficulty, category, image,
+    slug, title, title_en, description, description_en, duration, distance, difficulty, category, image,
     highlights, audio_guide, offline, price
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 )
-RETURNING id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at
+RETURNING id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at, title_en, description_en
 `
 
 type CreateRouteParams struct {
-	Slug        string   `json:"slug"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Duration    string   `json:"duration"`
-	Distance    string   `json:"distance"`
-	Difficulty  string   `json:"difficulty"`
-	Category    string   `json:"category"`
-	Image       string   `json:"image"`
-	Highlights  []string `json:"highlights"`
-	AudioGuide  bool     `json:"audio_guide"`
-	Offline     bool     `json:"offline"`
-	Price       string   `json:"price"`
+	Slug          string   `json:"slug"`
+	Title         string   `json:"title"`
+	TitleEn       *string  `json:"title_en"`
+	Description   string   `json:"description"`
+	DescriptionEn *string  `json:"description_en"`
+	Duration      string   `json:"duration"`
+	Distance      string   `json:"distance"`
+	Difficulty    string   `json:"difficulty"`
+	Category      string   `json:"category"`
+	Image         string   `json:"image"`
+	Highlights    []string `json:"highlights"`
+	AudioGuide    bool     `json:"audio_guide"`
+	Offline       bool     `json:"offline"`
+	Price         string   `json:"price"`
 }
 
 func (q *Queries) CreateRoute(ctx context.Context, arg CreateRouteParams) (Route, error) {
 	row := q.db.QueryRow(ctx, createRoute,
 		arg.Slug,
 		arg.Title,
+		arg.TitleEn,
 		arg.Description,
+		arg.DescriptionEn,
 		arg.Duration,
 		arg.Distance,
 		arg.Difficulty,
@@ -68,6 +72,8 @@ func (q *Queries) CreateRoute(ctx context.Context, arg CreateRouteParams) (Route
 		&i.Price,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TitleEn,
+		&i.DescriptionEn,
 	)
 	return i, err
 }
@@ -137,7 +143,7 @@ func (q *Queries) DeleteStepsByRoute(ctx context.Context, routeID pgtype.UUID) e
 }
 
 const getRouteBySlug = `-- name: GetRouteBySlug :one
-SELECT id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at FROM routes WHERE slug = $1
+SELECT id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at, title_en, description_en FROM routes WHERE slug = $1
 `
 
 func (q *Queries) GetRouteBySlug(ctx context.Context, slug string) (Route, error) {
@@ -159,12 +165,14 @@ func (q *Queries) GetRouteBySlug(ctx context.Context, slug string) (Route, error
 		&i.Price,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TitleEn,
+		&i.DescriptionEn,
 	)
 	return i, err
 }
 
 const listRoutes = `-- name: ListRoutes :many
-SELECT id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at FROM routes ORDER BY title
+SELECT id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at, title_en, description_en FROM routes ORDER BY title
 `
 
 func (q *Queries) ListRoutes(ctx context.Context) ([]Route, error) {
@@ -192,6 +200,8 @@ func (q *Queries) ListRoutes(ctx context.Context) ([]Route, error) {
 			&i.Price,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TitleEn,
+			&i.DescriptionEn,
 		); err != nil {
 			return nil, err
 		}
@@ -240,27 +250,29 @@ func (q *Queries) ListStepsByRoute(ctx context.Context, routeID pgtype.UUID) ([]
 
 const updateRoute = `-- name: UpdateRoute :one
 UPDATE routes SET
-    slug = $2, title = $3, description = $4, duration = $5, distance = $6,
-    difficulty = $7, category = $8, image = $9, highlights = $10,
-    audio_guide = $11, offline = $12, price = $13, updated_at = now()
+    slug = $2, title = $3, title_en = $4, description = $5, description_en = $6, duration = $7, distance = $8,
+    difficulty = $9, category = $10, image = $11, highlights = $12,
+    audio_guide = $13, offline = $14, price = $15, updated_at = now()
 WHERE id = $1
-RETURNING id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at
+RETURNING id, slug, title, description, duration, distance, difficulty, category, image, highlights, audio_guide, offline, price, created_at, updated_at, title_en, description_en
 `
 
 type UpdateRouteParams struct {
-	ID          pgtype.UUID `json:"id"`
-	Slug        string      `json:"slug"`
-	Title       string      `json:"title"`
-	Description string      `json:"description"`
-	Duration    string      `json:"duration"`
-	Distance    string      `json:"distance"`
-	Difficulty  string      `json:"difficulty"`
-	Category    string      `json:"category"`
-	Image       string      `json:"image"`
-	Highlights  []string    `json:"highlights"`
-	AudioGuide  bool        `json:"audio_guide"`
-	Offline     bool        `json:"offline"`
-	Price       string      `json:"price"`
+	ID            pgtype.UUID `json:"id"`
+	Slug          string      `json:"slug"`
+	Title         string      `json:"title"`
+	TitleEn       *string     `json:"title_en"`
+	Description   string      `json:"description"`
+	DescriptionEn *string     `json:"description_en"`
+	Duration      string      `json:"duration"`
+	Distance      string      `json:"distance"`
+	Difficulty    string      `json:"difficulty"`
+	Category      string      `json:"category"`
+	Image         string      `json:"image"`
+	Highlights    []string    `json:"highlights"`
+	AudioGuide    bool        `json:"audio_guide"`
+	Offline       bool        `json:"offline"`
+	Price         string      `json:"price"`
 }
 
 func (q *Queries) UpdateRoute(ctx context.Context, arg UpdateRouteParams) (Route, error) {
@@ -268,7 +280,9 @@ func (q *Queries) UpdateRoute(ctx context.Context, arg UpdateRouteParams) (Route
 		arg.ID,
 		arg.Slug,
 		arg.Title,
+		arg.TitleEn,
 		arg.Description,
+		arg.DescriptionEn,
 		arg.Duration,
 		arg.Distance,
 		arg.Difficulty,
@@ -296,6 +310,8 @@ func (q *Queries) UpdateRoute(ctx context.Context, arg UpdateRouteParams) (Route
 		&i.Price,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TitleEn,
+		&i.DescriptionEn,
 	)
 	return i, err
 }

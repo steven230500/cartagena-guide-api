@@ -34,7 +34,8 @@ func (r *RouteRepository) withSteps(ctx context.Context, route db.Route) (domain
 		steps[i] = toDomainStep(s)
 	}
 	return domain.Route{
-		ID: route.ID.String(), Slug: route.Slug, Title: route.Title, Description: route.Description,
+		ID: route.ID.String(), Slug: route.Slug, Title: route.Title, TitleEn: route.TitleEn,
+		Description: route.Description, DescriptionEn: route.DescriptionEn,
 		Duration: route.Duration, Distance: route.Distance, Difficulty: route.Difficulty,
 		Category: route.Category, Image: route.Image, Highlights: route.Highlights,
 		AudioGuide: route.AudioGuide, Offline: route.Offline, Price: route.Price, Steps: steps,
@@ -86,7 +87,7 @@ func (r *RouteRepository) GetBySlug(ctx context.Context, slug string) (domain.Ro
 
 func (r *RouteRepository) Create(ctx context.Context, in domain.Route) (domain.Route, error) {
 	route, err := r.Q.CreateRoute(ctx, db.CreateRouteParams{
-		Slug: in.Slug, Title: in.Title, Description: in.Description, Duration: in.Duration,
+		Slug: in.Slug, Title: in.Title, TitleEn: in.TitleEn, Description: in.Description, DescriptionEn: in.DescriptionEn, Duration: in.Duration,
 		Distance: in.Distance, Difficulty: in.Difficulty, Category: in.Category, Image: in.Image,
 		Highlights: normalizeTags(in.Highlights), AudioGuide: in.AudioGuide, Offline: in.Offline,
 		Price: in.Price,
@@ -106,7 +107,7 @@ func (r *RouteRepository) Update(ctx context.Context, id string, in domain.Route
 		return domain.Route{}, err
 	}
 	route, err := r.Q.UpdateRoute(ctx, db.UpdateRouteParams{
-		ID: uid, Slug: in.Slug, Title: in.Title, Description: in.Description, Duration: in.Duration,
+		ID: uid, Slug: in.Slug, Title: in.Title, TitleEn: in.TitleEn, Description: in.Description, DescriptionEn: in.DescriptionEn, Duration: in.Duration,
 		Distance: in.Distance, Difficulty: in.Difficulty, Category: in.Category, Image: in.Image,
 		Highlights: normalizeTags(in.Highlights), AudioGuide: in.AudioGuide, Offline: in.Offline,
 		Price: in.Price,

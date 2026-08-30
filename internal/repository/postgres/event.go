@@ -17,10 +17,10 @@ func NewEventRepository(q *db.Queries) *EventRepository {
 
 func toDomainEvent(e db.Event) domain.Event {
 	return domain.Event{
-		ID: e.ID.String(), Title: e.Title, Slug: e.Slug, StartDate: dateToString(e.StartDate),
+		ID: e.ID.String(), Title: e.Title, TitleEn: e.TitleEn, Slug: e.Slug, StartDate: dateToString(e.StartDate),
 		EndDate: dateToPtr(e.EndDate), Type: e.Type, Venue: e.Venue,
 		RelatedBusinessID: uuidToPtr(e.RelatedBusinessID), Lat: e.Lat, Lng: e.Lng, Image: e.Image,
-		Tags: e.Tags, Description: e.Description, Content: e.Content,
+		Tags: e.Tags, Description: e.Description, DescriptionEn: e.DescriptionEn, Content: e.Content,
 		CreatedAt: e.CreatedAt.Time, UpdatedAt: e.UpdatedAt.Time,
 	}
 }
@@ -60,9 +60,9 @@ func (r *EventRepository) Create(ctx context.Context, e domain.Event) (domain.Ev
 	}
 
 	row, err := r.Q.CreateEvent(ctx, db.CreateEventParams{
-		Title: e.Title, Slug: e.Slug, StartDate: startDate, EndDate: endDate,
+		Title: e.Title, TitleEn: e.TitleEn, Slug: e.Slug, StartDate: startDate, EndDate: endDate,
 		Type: e.Type, Venue: e.Venue, Lat: e.Lat, Lng: e.Lng, Image: e.Image,
-		Tags: normalizeTags(e.Tags), Description: e.Description, Content: e.Content,
+		Tags: normalizeTags(e.Tags), Description: e.Description, DescriptionEn: e.DescriptionEn, Content: e.Content,
 	})
 	if err != nil {
 		return domain.Event{}, err
@@ -89,9 +89,9 @@ func (r *EventRepository) Update(ctx context.Context, id string, e domain.Event)
 	}
 
 	row, err := r.Q.UpdateEvent(ctx, db.UpdateEventParams{
-		ID: uid, Title: e.Title, Slug: e.Slug, StartDate: startDate, EndDate: endDate,
+		ID: uid, Title: e.Title, TitleEn: e.TitleEn, Slug: e.Slug, StartDate: startDate, EndDate: endDate,
 		Type: e.Type, Venue: e.Venue, Lat: e.Lat, Lng: e.Lng, Image: e.Image,
-		Tags: normalizeTags(e.Tags), Description: e.Description, Content: e.Content,
+		Tags: normalizeTags(e.Tags), Description: e.Description, DescriptionEn: e.DescriptionEn, Content: e.Content,
 	})
 	if err != nil {
 		return domain.Event{}, domain.ErrNotFound

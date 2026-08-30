@@ -19,7 +19,7 @@ func toDomainBusiness(b db.Business) domain.Business {
 	return domain.Business{
 		ID: b.ID.String(), Name: b.Name, Slug: b.Slug, Type: b.Type, Subtype: b.Subtype,
 		Barrio: b.Barrio, Lat: b.Lat, Lng: b.Lng, Image: b.Image, Tags: b.Tags,
-		Description: b.Description, Hours: b.Hours, PriceHint: b.PriceHint,
+		Description: b.Description, DescriptionEn: b.DescriptionEn, Hours: b.Hours, PriceHint: b.PriceHint,
 		PriceTypicalNote: b.PriceTypicalNote, Phone: b.Phone, Web: b.Web, Email: b.Email,
 		Instagram: b.Instagram, OwnerID: uuidToPtr(b.OwnerID), Verified: b.Verified,
 		CreatedAt: b.CreatedAt.Time, UpdatedAt: b.UpdatedAt.Time,
@@ -98,7 +98,7 @@ func (r *BusinessRepository) Create(ctx context.Context, b domain.Business) (dom
 	row, err := r.Q.CreateBusiness(ctx, db.CreateBusinessParams{
 		Name: b.Name, Slug: b.Slug, Type: b.Type, Subtype: b.Subtype, Barrio: b.Barrio,
 		Lat: b.Lat, Lng: b.Lng, Image: b.Image, Tags: normalizeTags(b.Tags),
-		Description: b.Description, Hours: b.Hours, PriceHint: b.PriceHint,
+		Description: b.Description, DescriptionEn: b.DescriptionEn, Hours: b.Hours, PriceHint: b.PriceHint,
 		PriceTypicalNote: b.PriceTypicalNote, Phone: b.Phone, Web: b.Web, Email: b.Email,
 		Instagram: b.Instagram, Verified: b.Verified,
 	})
@@ -116,7 +116,7 @@ func (r *BusinessRepository) Update(ctx context.Context, id string, b domain.Bus
 	row, err := r.Q.UpdateBusiness(ctx, db.UpdateBusinessParams{
 		ID: uid, Name: b.Name, Slug: b.Slug, Type: b.Type, Subtype: b.Subtype, Barrio: b.Barrio,
 		Lat: b.Lat, Lng: b.Lng, Image: b.Image, Tags: normalizeTags(b.Tags),
-		Description: b.Description, Hours: b.Hours, PriceHint: b.PriceHint,
+		Description: b.Description, DescriptionEn: b.DescriptionEn, Hours: b.Hours, PriceHint: b.PriceHint,
 		PriceTypicalNote: b.PriceTypicalNote, Phone: b.Phone, Web: b.Web, Email: b.Email,
 		Instagram: b.Instagram, Verified: b.Verified,
 	})

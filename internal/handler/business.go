@@ -22,6 +22,7 @@ type BusinessInput struct {
 	Image            string   `json:"image"`
 	Tags             []string `json:"tags"`
 	Description      string   `json:"description"`
+	DescriptionEn    *string  `json:"description_en"`
 	Hours            *string  `json:"hours"`
 	PriceHint        *string  `json:"price_hint"`
 	PriceTypicalNote *string  `json:"price_typical_note"`
@@ -36,7 +37,8 @@ func (in BusinessInput) toDomain() domain.Business {
 	return domain.Business{
 		Name: in.Name, Slug: in.Slug, Type: in.Type, Subtype: in.Subtype, Barrio: in.Barrio,
 		Lat: in.Lat, Lng: in.Lng, Image: in.Image, Tags: in.Tags, Description: in.Description,
-		Hours: in.Hours, PriceHint: in.PriceHint, PriceTypicalNote: in.PriceTypicalNote,
+		DescriptionEn: in.DescriptionEn,
+		Hours:         in.Hours, PriceHint: in.PriceHint, PriceTypicalNote: in.PriceTypicalNote,
 		Phone: in.Phone, Web: in.Web, Email: in.Email, Instagram: in.Instagram, Verified: in.Verified,
 	}
 }

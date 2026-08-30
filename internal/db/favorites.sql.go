@@ -27,7 +27,7 @@ func (q *Queries) AddFavorite(ctx context.Context, arg AddFavoriteParams) error 
 }
 
 const listFavoriteBusinesses = `-- name: ListFavoriteBusinesses :many
-SELECT b.id, b.name, b.slug, b.type, b.subtype, b.barrio, b.lat, b.lng, b.image, b.tags, b.description, b.hours, b.price_hint, b.price_typical_note, b.phone, b.web, b.email, b.instagram, b.owner_id, b.verified, b.created_at, b.updated_at FROM businesses b
+SELECT b.id, b.name, b.slug, b.type, b.subtype, b.barrio, b.lat, b.lng, b.image, b.tags, b.description, b.hours, b.price_hint, b.price_typical_note, b.phone, b.web, b.email, b.instagram, b.owner_id, b.verified, b.created_at, b.updated_at, b.description_en FROM businesses b
 JOIN user_favorites f ON f.business_id = b.id
 WHERE f.user_id = $1
 ORDER BY f.created_at DESC
@@ -65,6 +65,7 @@ func (q *Queries) ListFavoriteBusinesses(ctx context.Context, userID pgtype.UUID
 			&i.Verified,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DescriptionEn,
 		); err != nil {
 			return nil, err
 		}

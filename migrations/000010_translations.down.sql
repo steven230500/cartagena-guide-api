@@ -1,0 +1,5 @@
+ALTER TABLE businesses DROP COLUMN IF EXISTS description_en;
+ALTER TABLE routes DROP COLUMN IF EXISTS title_en;
+ALTER TABLE routes DROP COLUMN IF EXISTS description_en;
+ALTER TABLE events DROP COLUMN IF EXISTS title_en;
+ALTER TABLE events DROP COLUMN IF EXISTS description_en;

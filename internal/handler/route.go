@@ -20,19 +20,21 @@ type StepInput struct {
 }
 
 type RouteInput struct {
-	Slug        string      `json:"slug" binding:"required"`
-	Title       string      `json:"title" binding:"required"`
-	Description string      `json:"description"`
-	Duration    string      `json:"duration"`
-	Distance    string      `json:"distance"`
-	Difficulty  string      `json:"difficulty"`
-	Category    string      `json:"category" binding:"required"`
-	Image       string      `json:"image"`
-	Highlights  []string    `json:"highlights"`
-	AudioGuide  bool        `json:"audio_guide"`
-	Offline     bool        `json:"offline"`
-	Price       string      `json:"price"`
-	Steps       []StepInput `json:"steps"`
+	Slug          string      `json:"slug" binding:"required"`
+	Title         string      `json:"title" binding:"required"`
+	TitleEn       *string     `json:"title_en"`
+	Description   string      `json:"description"`
+	DescriptionEn *string     `json:"description_en"`
+	Duration      string      `json:"duration"`
+	Distance      string      `json:"distance"`
+	Difficulty    string      `json:"difficulty"`
+	Category      string      `json:"category" binding:"required"`
+	Image         string      `json:"image"`
+	Highlights    []string    `json:"highlights"`
+	AudioGuide    bool        `json:"audio_guide"`
+	Offline       bool        `json:"offline"`
+	Price         string      `json:"price"`
+	Steps         []StepInput `json:"steps"`
 }
 
 func (in RouteInput) toDomain() domain.Route {
@@ -44,7 +46,7 @@ func (in RouteInput) toDomain() domain.Route {
 		}
 	}
 	return domain.Route{
-		Slug: in.Slug, Title: in.Title, Description: in.Description, Duration: in.Duration,
+		Slug: in.Slug, Title: in.Title, TitleEn: in.TitleEn, Description: in.Description, DescriptionEn: in.DescriptionEn, Duration: in.Duration,
 		Distance: in.Distance, Difficulty: in.Difficulty, Category: in.Category, Image: in.Image,
 		Highlights: in.Highlights, AudioGuide: in.AudioGuide, Offline: in.Offline, Price: in.Price,
 		Steps: steps,

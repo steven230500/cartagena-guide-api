@@ -7,6 +7,7 @@ import "time"
 type Event struct {
 	ID                string    `json:"id"`
 	Title             string    `json:"title"`
+	TitleEn           *string   `json:"title_en"`
 	Slug              string    `json:"slug"`
 	StartDate         string    `json:"start_date"`
 	EndDate           *string   `json:"end_date"`
@@ -18,6 +19,7 @@ type Event struct {
 	Image             string    `json:"image"`
 	Tags              []string  `json:"tags"`
 	Description       string    `json:"description"`
+	DescriptionEn     *string   `json:"description_en"`
 	Content           *string   `json:"content"`
 	CreatedAt         time.Time `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`

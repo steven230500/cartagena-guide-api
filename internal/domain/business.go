@@ -14,6 +14,7 @@ type Business struct {
 	Image            string    `json:"image"`
 	Tags             []string  `json:"tags"`
 	Description      string    `json:"description"`
+	DescriptionEn    *string   `json:"description_en"`
 	Hours            *string   `json:"hours"`
 	PriceHint        *string   `json:"price_hint"`
 	PriceTypicalNote *string   `json:"price_typical_note"`

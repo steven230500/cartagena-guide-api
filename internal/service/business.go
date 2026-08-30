@@ -40,7 +40,7 @@ func (s *BusinessService) ListByOwner(ctx context.Context, ownerID string) ([]do
 }
 
 // UpdateAsOwner solo deja tocar los campos de domain.BusinessOwnerPatch — nombre/
-// slug/tipo/subtipo/barrio/coords/verified quedan intactos pase lo que pase en el patch.
+// slug/tipo/subtipo/barrio/coords quedan intactos pase lo que pase en el patch.
 func (s *BusinessService) UpdateAsOwner(ctx context.Context, id, ownerID string, patch domain.BusinessOwnerPatch) (domain.Business, error) {
 	existing, err := s.repo.GetByID(ctx, id)
 	if err != nil {

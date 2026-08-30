@@ -30,7 +30,6 @@ type BusinessInput struct {
 	Web              *string  `json:"web"`
 	Email            *string  `json:"email"`
 	Instagram        *string  `json:"instagram"`
-	Verified         bool     `json:"verified"`
 }
 
 func (in BusinessInput) toDomain() domain.Business {
@@ -39,7 +38,7 @@ func (in BusinessInput) toDomain() domain.Business {
 		Lat: in.Lat, Lng: in.Lng, Image: in.Image, Tags: in.Tags, Description: in.Description,
 		DescriptionEn: in.DescriptionEn,
 		Hours:         in.Hours, PriceHint: in.PriceHint, PriceTypicalNote: in.PriceTypicalNote,
-		Phone: in.Phone, Web: in.Web, Email: in.Email, Instagram: in.Instagram, Verified: in.Verified,
+		Phone: in.Phone, Web: in.Web, Email: in.Email, Instagram: in.Instagram,
 	}
 }
 
@@ -123,7 +122,7 @@ func (h *BusinessHandler) Delete(c *gin.Context) {
 }
 
 // MyBusinessInput es el subconjunto de campos que puede tocar el dueño de un
-// negocio (Fase 5) — nombre/slug/tipo/subtipo/barrio/coords/verified quedan
+// negocio (Fase 5) — nombre/slug/tipo/subtipo/barrio/coords quedan
 // admin-only, así que ni siquiera se aceptan en este body.
 type MyBusinessInput struct {
 	Description      string   `json:"description"`

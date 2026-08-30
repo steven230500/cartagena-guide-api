@@ -23,7 +23,6 @@ type Business struct {
 	Email            *string   `json:"email"`
 	Instagram        *string   `json:"instagram"`
 	OwnerID          *string   `json:"owner_id"`
-	Verified         bool      `json:"verified"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 }
@@ -36,8 +35,8 @@ type BusinessFilter struct {
 }
 
 // BusinessOwnerPatch es el subconjunto de campos que puede tocar el dueño
-// de un negocio (Fase 5) — nombre/slug/tipo/subtipo/barrio/coords/verified
-// quedan admin-only, se pisan siempre con los valores existentes.
+// de un negocio (Fase 5) — nombre/slug/tipo/subtipo/barrio/coords quedan
+// admin-only, se pisan siempre con los valores existentes.
 type BusinessOwnerPatch struct {
 	Description      string
 	Hours            *string

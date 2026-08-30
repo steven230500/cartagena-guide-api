@@ -1,0 +1,1 @@
+ALTER TABLE businesses ADD COLUMN verified BOOLEAN NOT NULL DEFAULT false;

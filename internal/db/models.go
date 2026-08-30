@@ -40,7 +40,6 @@ type Business struct {
 	Email            *string            `json:"email"`
 	Instagram        *string            `json:"instagram"`
 	OwnerID          pgtype.UUID        `json:"owner_id"`
-	Verified         bool               `json:"verified"`
 	CreatedAt        pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt        pgtype.Timestamptz `json:"updated_at"`
 	DescriptionEn    *string            `json:"description_en"`

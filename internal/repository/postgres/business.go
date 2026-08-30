@@ -21,7 +21,7 @@ func toDomainBusiness(b db.Business) domain.Business {
 		Barrio: b.Barrio, Lat: b.Lat, Lng: b.Lng, Image: b.Image, Tags: b.Tags,
 		Description: b.Description, DescriptionEn: b.DescriptionEn, Hours: b.Hours, PriceHint: b.PriceHint,
 		PriceTypicalNote: b.PriceTypicalNote, Phone: b.Phone, Web: b.Web, Email: b.Email,
-		Instagram: b.Instagram, OwnerID: uuidToPtr(b.OwnerID), Verified: b.Verified,
+		Instagram: b.Instagram, OwnerID: uuidToPtr(b.OwnerID),
 		CreatedAt: b.CreatedAt.Time, UpdatedAt: b.UpdatedAt.Time,
 	}
 }
@@ -100,7 +100,7 @@ func (r *BusinessRepository) Create(ctx context.Context, b domain.Business) (dom
 		Lat: b.Lat, Lng: b.Lng, Image: b.Image, Tags: normalizeTags(b.Tags),
 		Description: b.Description, DescriptionEn: b.DescriptionEn, Hours: b.Hours, PriceHint: b.PriceHint,
 		PriceTypicalNote: b.PriceTypicalNote, Phone: b.Phone, Web: b.Web, Email: b.Email,
-		Instagram: b.Instagram, Verified: b.Verified,
+		Instagram: b.Instagram,
 	})
 	if err != nil {
 		return domain.Business{}, err
@@ -118,7 +118,7 @@ func (r *BusinessRepository) Update(ctx context.Context, id string, b domain.Bus
 		Lat: b.Lat, Lng: b.Lng, Image: b.Image, Tags: normalizeTags(b.Tags),
 		Description: b.Description, DescriptionEn: b.DescriptionEn, Hours: b.Hours, PriceHint: b.PriceHint,
 		PriceTypicalNote: b.PriceTypicalNote, Phone: b.Phone, Web: b.Web, Email: b.Email,
-		Instagram: b.Instagram, Verified: b.Verified,
+		Instagram: b.Instagram,
 	})
 	if err != nil {
 		return domain.Business{}, domain.ErrNotFound

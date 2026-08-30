@@ -14,11 +14,11 @@ import (
 const createBusiness = `-- name: CreateBusiness :one
 INSERT INTO businesses (
     name, slug, type, subtype, barrio, lat, lng, image, tags, description, description_en,
-    hours, price_hint, price_typical_note, phone, web, email, instagram, verified
+    hours, price_hint, price_typical_note, phone, web, email, instagram
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
 )
-RETURNING id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en
+RETURNING id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en
 `
 
 type CreateBusinessParams struct {
@@ -40,7 +40,6 @@ type CreateBusinessParams struct {
 	Web              *string  `json:"web"`
 	Email            *string  `json:"email"`
 	Instagram        *string  `json:"instagram"`
-	Verified         bool     `json:"verified"`
 }
 
 func (q *Queries) CreateBusiness(ctx context.Context, arg CreateBusinessParams) (Business, error) {
@@ -63,7 +62,6 @@ func (q *Queries) CreateBusiness(ctx context.Context, arg CreateBusinessParams) 
 		arg.Web,
 		arg.Email,
 		arg.Instagram,
-		arg.Verified,
 	)
 	var i Business
 	err := row.Scan(
@@ -86,7 +84,6 @@ func (q *Queries) CreateBusiness(ctx context.Context, arg CreateBusinessParams) 
 		&i.Email,
 		&i.Instagram,
 		&i.OwnerID,
-		&i.Verified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DescriptionEn,
@@ -104,7 +101,7 @@ func (q *Queries) DeleteBusiness(ctx context.Context, id pgtype.UUID) error {
 }
 
 const getBusinessByID = `-- name: GetBusinessByID :one
-SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en FROM businesses WHERE id = $1
+SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en FROM businesses WHERE id = $1
 `
 
 func (q *Queries) GetBusinessByID(ctx context.Context, id pgtype.UUID) (Business, error) {
@@ -130,7 +127,6 @@ func (q *Queries) GetBusinessByID(ctx context.Context, id pgtype.UUID) (Business
 		&i.Email,
 		&i.Instagram,
 		&i.OwnerID,
-		&i.Verified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DescriptionEn,
@@ -139,7 +135,7 @@ func (q *Queries) GetBusinessByID(ctx context.Context, id pgtype.UUID) (Business
 }
 
 const getBusinessBySlug = `-- name: GetBusinessBySlug :one
-SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en FROM businesses WHERE slug = $1
+SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en FROM businesses WHERE slug = $1
 `
 
 func (q *Queries) GetBusinessBySlug(ctx context.Context, slug string) (Business, error) {
@@ -165,7 +161,6 @@ func (q *Queries) GetBusinessBySlug(ctx context.Context, slug string) (Business,
 		&i.Email,
 		&i.Instagram,
 		&i.OwnerID,
-		&i.Verified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DescriptionEn,
@@ -174,7 +169,7 @@ func (q *Queries) GetBusinessBySlug(ctx context.Context, slug string) (Business,
 }
 
 const listBusinesses = `-- name: ListBusinesses :many
-SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en FROM businesses
+SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en FROM businesses
 WHERE ($1::text IS NULL OR type = $1)
   AND ($2::text IS NULL OR barrio = $2)
   AND ($3::text IS NULL OR name ILIKE '%' || $3 || '%')
@@ -216,7 +211,6 @@ func (q *Queries) ListBusinesses(ctx context.Context, arg ListBusinessesParams) 
 			&i.Email,
 			&i.Instagram,
 			&i.OwnerID,
-			&i.Verified,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DescriptionEn,
@@ -232,7 +226,7 @@ func (q *Queries) ListBusinesses(ctx context.Context, arg ListBusinessesParams) 
 }
 
 const listBusinessesByOwner = `-- name: ListBusinessesByOwner :many
-SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en FROM businesses WHERE owner_id = $1 ORDER BY name
+SELECT id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en FROM businesses WHERE owner_id = $1 ORDER BY name
 `
 
 func (q *Queries) ListBusinessesByOwner(ctx context.Context, ownerID pgtype.UUID) ([]Business, error) {
@@ -264,7 +258,6 @@ func (q *Queries) ListBusinessesByOwner(ctx context.Context, ownerID pgtype.UUID
 			&i.Email,
 			&i.Instagram,
 			&i.OwnerID,
-			&i.Verified,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DescriptionEn,
@@ -280,7 +273,7 @@ func (q *Queries) ListBusinessesByOwner(ctx context.Context, ownerID pgtype.UUID
 }
 
 const setBusinessOwner = `-- name: SetBusinessOwner :one
-UPDATE businesses SET owner_id = $2, updated_at = now() WHERE id = $1 RETURNING id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en
+UPDATE businesses SET owner_id = $2, updated_at = now() WHERE id = $1 RETURNING id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en
 `
 
 type SetBusinessOwnerParams struct {
@@ -311,7 +304,6 @@ func (q *Queries) SetBusinessOwner(ctx context.Context, arg SetBusinessOwnerPara
 		&i.Email,
 		&i.Instagram,
 		&i.OwnerID,
-		&i.Verified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DescriptionEn,
@@ -324,9 +316,9 @@ UPDATE businesses SET
     name = $2, slug = $3, type = $4, subtype = $5, barrio = $6, lat = $7, lng = $8,
     image = $9, tags = $10, description = $11, description_en = $12, hours = $13, price_hint = $14,
     price_typical_note = $15, phone = $16, web = $17, email = $18, instagram = $19,
-    verified = $20, updated_at = now()
+    updated_at = now()
 WHERE id = $1
-RETURNING id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, verified, created_at, updated_at, description_en
+RETURNING id, name, slug, type, subtype, barrio, lat, lng, image, tags, description, hours, price_hint, price_typical_note, phone, web, email, instagram, owner_id, created_at, updated_at, description_en
 `
 
 type UpdateBusinessParams struct {
@@ -349,7 +341,6 @@ type UpdateBusinessParams struct {
 	Web              *string     `json:"web"`
 	Email            *string     `json:"email"`
 	Instagram        *string     `json:"instagram"`
-	Verified         bool        `json:"verified"`
 }
 
 func (q *Queries) UpdateBusiness(ctx context.Context, arg UpdateBusinessParams) (Business, error) {
@@ -373,7 +364,6 @@ func (q *Queries) UpdateBusiness(ctx context.Context, arg UpdateBusinessParams) 
 		arg.Web,
 		arg.Email,
 		arg.Instagram,
-		arg.Verified,
 	)
 	var i Business
 	err := row.Scan(
@@ -396,7 +386,6 @@ func (q *Queries) UpdateBusiness(ctx context.Context, arg UpdateBusinessParams) 
 		&i.Email,
 		&i.Instagram,
 		&i.OwnerID,
-		&i.Verified,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DescriptionEn,

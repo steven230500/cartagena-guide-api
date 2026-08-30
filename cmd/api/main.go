@@ -83,8 +83,12 @@ func main() {
 		api.GET("/routes/:slug", routeHandler.GetBySlug)
 		api.GET("/achievements", achievementHandler.List)
 
-		api.POST("/auth/register", authHandler.Register)
-		api.POST("/auth/login", authHandler.Login)
+		authRateLimited := api.Group("/auth")
+		authRateLimited.Use(middleware.RequireRateLimit(5))
+		{
+			authRateLimited.POST("/register", authHandler.Register)
+			authRateLimited.POST("/login", authHandler.Login)
+		}
 
 		authed := api.Group("")
 		authed.Use(middleware.RequireUser(authSvc))
